@@ -1,0 +1,7 @@
+*.o
+*.a
+printo
+vgcore*
+main.c
+.vscode
+a.out
