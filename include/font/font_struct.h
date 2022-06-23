@@ -7,8 +7,7 @@
 #ifndef __FONT_STRUCT_H__
 #define __FONT_STRUCT_H__
 
-// #define FONT_PATH "./font/Consolas.ttf"
-#define FONT_PATH "./font/project.ttf"
+#define FONT_PATH "./asset/font/project.ttf"
 
 #define FONT_RATIO 0.58
 
