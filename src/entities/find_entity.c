@@ -14,6 +14,7 @@ t_entity find_entity(t_entity_array *array,
 	t_entity entity;
 
 	i = 0;
+	entity = new_entity(NULL, NO_CLASS, SETPOS(-1, -1));
 	while (i < array->nbr_entities)
 	{
 		entity = array->entities[i];
@@ -27,5 +28,5 @@ t_entity find_entity(t_entity_array *array,
 	}
 	if (entity_pos != NULL)
 		*entity_pos = -1;
-	return (array->entities[0]);
+	return (entity);
 }
