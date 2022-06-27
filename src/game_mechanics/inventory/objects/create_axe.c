@@ -35,6 +35,7 @@ t_weapon create_axe(int type)
         axe.name = term_strdup("Silver axe");
     }
     axe.durability = axe.max_durability;
-    axe.range = 1;
+    axe.range[MIN_RANGE] = 1;
+    axe.range[MAX_RANGE] = 1;
     return (axe);
 }

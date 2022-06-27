@@ -33,15 +33,16 @@ BLINK 	= 	"\033[1;92m"
 SBLINK	= 	"\033[0m"
 INVERT  =	"\033[7m"
 
-all:$(NAME)
+all:
+	@make build -j64
 
+build:$(NAME)
 %.o : %.c
 	@if [ "$(findstring $(LIBPATH),$@)" != $(LIBPATH) ]; then \
 	$(CC) -o $@ -c $< $(SUB_DIR_INCLUDE) $(CFLAG) $(ERRFLAG) \
 	$(BUNNYFLAG) && \
 	$(ECHO) $(BLINK) "[OK]"$(SBLINK) $(PINK) $< $(DEFLT) || \
 	$(ECHO) $(RED) "[KO]" $(PINK) $< $(DEFLT); fi;
-
 $(NAME):$(OBJ)
 	@ $(CC) $(shell find ./ -name "*.o") -o $(NAME) \
 	$(SUB_DIR_INCLUDE) $(CFLAG) $(ERRFLAG) $(LIBFLAG) $(BUNNYFLAG) && \

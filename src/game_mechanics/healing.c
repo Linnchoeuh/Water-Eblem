@@ -15,9 +15,12 @@ void healing(t_entity *healer,
         return;
     if (healer->equiped->type != HEAL_STAFF)
         return;
+    printo("\n----HEAL----\n");
     healing = healer->equiped->attack + healer->damage;
     printo("%d hp restored.\n", healing);
-    target->health += healing;
+        target->health += healing;
     if (target->health > target->max_health)
         target->health = target->max_health;
+    printo("Unit team: %d | hp %d/%d\n",
+           target->team, target->health, target->max_health);
 }

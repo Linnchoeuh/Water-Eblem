@@ -35,6 +35,7 @@ t_weapon create_staff(int type)
         staff.name = term_strdup("Silver staff");
     }
     staff.durability = staff.max_durability;
-    staff.range = 1;
+    staff.range[MIN_RANGE] = 1;
+    staff.range[MAX_RANGE] = 1;
     return (staff);
 }

@@ -55,7 +55,7 @@ typedef struct s_entity
     int movement;
     int class;
     bool alive;
-    bool played;
+    bool moved;
     bool attacked;
     t_inventory inventory;
     t_weapon *equiped;

@@ -10,6 +10,7 @@ void delete_range(t_range *range)
 {
 	if (range == NULL)
 		return;
-	bunny_free(range->pos);
+	if (range->data != NULL)
+		bunny_free(range->data);
 	bunny_free(range);
 }
