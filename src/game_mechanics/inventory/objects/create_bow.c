@@ -35,6 +35,7 @@ t_weapon create_bow(int type)
         bow.name = term_strdup("Silver bow");
     }
     bow.durability = bow.max_durability;
-    bow.range = 2;
+    bow.range[MIN_RANGE] = 2;
+    bow.range[MAX_RANGE] = 2;
     return (bow);
 }

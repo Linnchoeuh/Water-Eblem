@@ -64,6 +64,23 @@ void play_menu(t_bunny_buffer *buf,
 	display_range(buf, range, game->map->camera, m_data);
 	button_play_menu(game, m_data);
 	delete_range(range);
-	if (game->keyboard.key_pressed[BKS_ESCAPE])
+	if (m_data->selected_entity != NULL &&
+		game->keyboard.key_pressed[BKS_ESCAPE] &&
+		!m_data->selected_entity->attacked)
+	{
+		if (m_data->selected_entity->moved)
+		{
+			m_data->selected_entity->pos = m_data->prev_pos;
+			m_data->selected_entity->moved = false;
+		}
+		else
+			m_data->selected_entity = NULL;
+	}
+	if (m_data->selected_entity != NULL &&
+		game->keyboard.key_pressed[BKS_RETURN] &&
+		m_data->selected_entity->moved)
+		m_data->selected_entity->attacked = true;
+	if (m_data->selected_entity != NULL &&
+		m_data->selected_entity->attacked)
 		m_data->selected_entity = NULL;
 }

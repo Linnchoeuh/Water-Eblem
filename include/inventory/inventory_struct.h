@@ -33,13 +33,19 @@ typedef enum e_weapon_tier
     NETHERITE,
 }   t_weapon_tier;
 
+typedef enum e_range_info
+{
+    MIN_RANGE,
+    MAX_RANGE,
+}   t_range_info;
+
 typedef struct s_weapon
 {
     char *name;
     int type;
     int tier;
     int attack;
-    int range;
+    int range[2];
     int max_durability;
     int durability;
 }   t_weapon;

@@ -18,7 +18,8 @@ t_entity new_entity(t_animation *anim,
     entity.team = 0;
     entity.class = unit_class;
     entity.animation = anim;
-    entity.attacked = 0;
+    entity.moved = false;
+    entity.attacked = false;
     entity.inventory = create_inventory(INVENTORY_SIZE);
     entity.equiped = NULL;
     if (unit_class == SWORDSMAN)

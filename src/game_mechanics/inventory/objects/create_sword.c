@@ -35,6 +35,7 @@ t_weapon create_sword(int type)
         sword.name = term_strdup("Silver sword");
     }
     sword.durability = sword.max_durability;
-    sword.range = 1;
+    sword.range[MIN_RANGE] = 1;
+    sword.range[MAX_RANGE] = 1;
     return (sword);
 }
