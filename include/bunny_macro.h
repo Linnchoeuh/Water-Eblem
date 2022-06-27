@@ -15,6 +15,9 @@
 	({t_bunny_accurate_position __pos__; \
 	__pos__.x = (__posx);__pos__.y = (__posy);__pos__;})
 
+#define SAMEPOS(pos1, pos2) \
+	((pos1).x == (pos2).x && (pos1).y == (pos2).y)
+
 #define SETAREA(__x, __y, __w, __h) \
 	({t_bunny_area __area__; \
 	__area__.x = (__x); \

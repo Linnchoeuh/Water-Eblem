@@ -35,7 +35,8 @@ t_weapon create_spellbook(int type)
         spellbook.name = term_strdup("Elwind spellbook");
     }
     spellbook.durability = spellbook.max_durability;
-    spellbook.range = 2;
+    spellbook.range[MIN_RANGE] = 1;
+    spellbook.range[MAX_RANGE] = 2;
     return (spellbook);
 }
 

@@ -13,8 +13,8 @@ void reset_movement_entity(t_entity_array *array)
     i = 0;
     while (i < array->nbr_entities)
     {
-        array->entities[i].played = 0;
-        array->entities[i].attacked = 0;
+        array->entities[i].moved = false;
+        array->entities[i].attacked = false;
         ++i;
     }
 }

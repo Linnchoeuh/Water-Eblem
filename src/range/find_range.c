@@ -14,57 +14,111 @@ bool pos_exist(t_range *range,
 	i = 0;
 	while (i < range->nbr_pos)
 	{
-		if (range->pos[i].x == new_pos.x &&
-			range->pos[i].y == new_pos.y)
+		if (SAMEPOS(range->data[i].pos, new_pos))
 			return (true);
 		i++;
 	}
 	return (false);
 }
 
-void add_pos(t_range *range,
-			 t_bunny_position new_pos)
+bool add_pos(t_range *range,
+			 t_bunny_position new_pos,
+			 int type)
 {
 	if (pos_exist(range, new_pos))
-		return;
+		return (false);
 	range->nbr_pos += 1;
-	range->pos = std_realloc(range->pos,
-							 range->nbr_pos * sizeof(t_bunny_position));
-	range->pos[range->nbr_pos - 1] = new_pos;
+	range->data = std_realloc(range->data,
+							  range->nbr_pos * sizeof(t_range_data));
+	if (range->data == NULL)
+	{
+		range->nbr_pos = 0;
+		return (false);
+	}
+	range->data[range->nbr_pos - 1].pos = new_pos;
+	range->data[range->nbr_pos - 1].type = type;
+	return (true);
 }
 
 void tile_finder(t_range *range,
 				 t_bunny_position pos,
-				 int mvt,
-				 bool start)
+				 int mvt)
 {
-	t_tile *tile;
-	bool is_block;
-	bool ok;
+	int type;
 	int entity_pos;
+	bool ok;
+	bool is_block;
+	t_tile *tile;
+	t_entity tmp_entity;
 
 	if (mvt < 0)
 		return;
-	tile = find_tile(range->tile_array, pos);
-	is_block = true;
-	if (tile != NULL)
-		is_block = tile->is_block;
-	find_entity(range->entity_array, pos, &entity_pos);
-	ok = (!is_block && entity_pos == -1);
+	ok = true;
+	if (!SAMEPOS(range->entity->pos, pos))
+	{
+		tile = find_tile(range->tile_array, pos);
+		tmp_entity = find_entity(range->entity_array, pos, &entity_pos);
+		type = TILE_NONE;
+		is_block = ((tile != NULL) ? tile->is_block : true);
+		ok = !is_block;
+		if (!is_block && entity_pos != -1)
+		{
+			if (tmp_entity.team == range->entity->team)
+			{
+				type = TILE_ALLY;
+				if (range->entity->equiped->type == HEAL_STAFF)
+					type = TILE_ALLY_HEAL;
+			}
+			else
+			{
+				type = TILE_ENEMY;
+				ok = false;
+			}
+		}
+		if (!is_block)
+			add_pos(range, pos, type);
+	}
 	if (ok)
-		add_pos(range, pos);
-	if (ok || start)
 	{
 		pos.x += 1;
-		tile_finder(range, pos, mvt - 1, false);
+		tile_finder(range, pos, mvt - 1);
 		pos.x -= 2;
-		tile_finder(range, pos, mvt - 1, false);
+		tile_finder(range, pos, mvt - 1);
 		pos.x += 1;
 		pos.y += 1;
-		tile_finder(range, pos, mvt - 1, false);
+		tile_finder(range, pos, mvt - 1);
 		pos.y -= 2;
-		tile_finder(range, pos, mvt - 1, false);
+		tile_finder(range, pos, mvt - 1);
 	}
+}
+
+void weapon_range_finder(t_range *range,
+						 t_bunny_position pos,
+						 int *weapon_range,
+						 int current_range)
+{
+	int type;
+
+	if (current_range > weapon_range[MAX_RANGE] ||
+		find_tile(range->tile_array, pos) == NULL)
+		return;
+	type = TILE_NOTHING;
+	if (current_range >= weapon_range[MIN_RANGE])
+	{
+		type = TILE_ATTACK;
+		if (range->entity->equiped->type == HEAL_STAFF)
+			type = TILE_HEAL;
+	}
+		add_pos(range, pos, type);
+	pos.x += 1;
+	weapon_range_finder(range, pos, weapon_range, current_range + 1);
+	pos.x -= 2;
+	weapon_range_finder(range, pos, weapon_range, current_range + 1);
+	pos.x += 1;
+	pos.y += 1;
+	weapon_range_finder(range, pos, weapon_range, current_range + 1);
+	pos.y -= 2;
+	weapon_range_finder(range, pos, weapon_range, current_range + 1);
 }
 
 t_range *find_range(t_tile_array *tile_array,
@@ -73,46 +127,28 @@ t_range *find_range(t_tile_array *tile_array,
 					int turn)
 {
 	t_range *range;
-	t_entity tmp_entity;
-	t_bunny_position pos;
-	int entity_pos;
 
-
-	if (entity == NULL)
+	if (entity == NULL || turn != entity->team)
 		return (NULL);
 	range = bunny_malloc(sizeof(t_range));
+	if (range == NULL)
+		return (NULL);
+	range->data = bunny_malloc(0);
+	if (range->data == NULL)
+	{
+		delete_range(range);
+		return (NULL);
+	}
 	range->nbr_pos = 0;
-	range->entity_array = entity_array;
+	range->entity = entity;
 	range->tile_array = tile_array;
-	range->pos = bunny_malloc(0);
-	pos = entity->pos;
-	tile_finder(range, entity->pos, entity->max_movement, true);
-	pos.x += 1;
-	tmp_entity = find_entity(entity_array,
-							pos,
-							&entity_pos);
-	range->right = 0;
-	if (entity_pos > 0)
-		range->right = 1 + (tmp_entity.team == turn);
-
-	pos.x -= 2;
-	tmp_entity = find_entity(entity_array, pos, &entity_pos);
-	range->left = 0;
-	if (entity_pos > 0)
-		range->left = 1 + (tmp_entity.team == turn);
-
-	pos.x += 1;
-	pos.y += 1;
-	tmp_entity = find_entity(entity_array, pos, &entity_pos);
-	range->down = 0;
-	if (entity_pos > 0)
-		range->down = 1 + (tmp_entity.team == turn);
-
-	pos.y -= 2;
-	tmp_entity = find_entity(entity_array, pos, &entity_pos);
-	range->up = 0;
-	if (entity_pos > 0)
-		range->up = 1 + (tmp_entity.team == turn);
-
+	range->entity_array = entity_array;
+	if (!entity->attacked)
+	{
+		if (!entity->moved)
+			tile_finder(range, entity->pos, entity->max_movement);
+		else if (entity->equiped != NULL)
+			weapon_range_finder(range, entity->pos, entity->equiped->range, 0);
+	}
 	return (range);
 }

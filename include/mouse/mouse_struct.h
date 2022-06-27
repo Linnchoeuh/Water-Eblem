@@ -12,10 +12,10 @@
 #include "bunny_macro.h"
 
 #define IS_POINT_IN_AREA(__bunny_area, __bunny_position) ( \
-	__bunny_position.x >= __bunny_area.x && \
-	__bunny_position.y >= __bunny_area.y && \
-	__bunny_position.x < __bunny_area.x + __bunny_area.w && \
-	__bunny_position.y < __bunny_area.y + __bunny_area.h \
+	(__bunny_position).x >= (__bunny_area).x && \
+	(__bunny_position).y >= (__bunny_area).y && \
+	(__bunny_position).x < (__bunny_area).x + (__bunny_area).w && \
+	(__bunny_position).y < (__bunny_area).y + (__bunny_area).h \
 )
 
 typedef struct	s_mouse

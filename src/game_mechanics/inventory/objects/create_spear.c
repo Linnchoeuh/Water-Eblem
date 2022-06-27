@@ -35,6 +35,7 @@ t_weapon create_spear(int type)
         spear.name = term_strdup("Silver spear");
     }
     spear.durability = spear.max_durability;
-    spear.range = 1;
+    spear.range[MIN_RANGE] = 1;
+    spear.range[MAX_RANGE] = 1;
     return (spear);
 }

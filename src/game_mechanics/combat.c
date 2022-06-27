@@ -16,6 +16,8 @@ static void hit(t_entity *attacker,
     {
         defender->health -= damage;
         printo("%d damage delt\n", damage);
+        printo("Unit team: %d | hp %d/%d\n",
+               defender->team, defender->health, defender->max_health);
     }
     else
         write(1, "No damage.\n", term_strlen("No damage.\n"));
@@ -36,6 +38,7 @@ static bool is_dead(t_entity *entity)
 static bool attack_turn(t_entity *attacker,
                         t_entity *defender)
 {
+    printo("\n----FIGHT----\n");
     hit(attacker, defender);
     if (is_dead(defender))
         return (1);
@@ -73,4 +76,3 @@ void combat(t_entity *attacker,
     else if (desabled == false)
         attack_turn(defender, attacker);
 }
-
