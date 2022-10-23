@@ -59,6 +59,6 @@ void main_menu(t_bunny_buffer *buf,
 		}
 		game->menu.previous = game->menu.current;
 	}
-	draw_str(buf, game->font[FS_100], "FIRE EMBLEM", SETPOS(10, 10));
+	draw_str(buf, game->font[FS_100], "WATER EBLEM", SETPOS(10, 10));
 	draw_main_menu_buttons(game, menu_data);
 }
